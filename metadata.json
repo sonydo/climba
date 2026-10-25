@@ -1,0 +1,6 @@
+{
+  "name": "ClimaVerse Studio - Weather & Kotlin Jetpack Compose",
+  "description": "Aplicación de meteorología completa en tiempo real con previsión horaria y de 7 días, mapas interactivos, recomendaciones de IA y visor/exportador de código Kotlin Jetpack Compose.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
