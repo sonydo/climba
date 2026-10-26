@@ -1,3 +1,8 @@
+plugins {
+    alias(libs.plugins.android.application) // O id("com.android.application")
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+}
 buildscript {
     repositories {
         google()
