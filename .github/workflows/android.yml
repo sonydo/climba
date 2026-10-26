@@ -1,7 +1,5 @@
-name: Generar APK de Android
-
-on:
-  push:
+- name: Build APK con Gradle
+  run: ./gradlew :app:assembleDebug --no-daemon
     branches: [ "main" ] # Cambia a "master" si tu rama principal se llama así
   workflow_dispatch:
 
