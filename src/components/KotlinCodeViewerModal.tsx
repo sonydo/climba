@@ -112,17 +112,122 @@ dependencies {
 }`
     },
     {
-      filename: 'app/src/main/AndroidManifest.xml',
-      description: 'Manifiesto de la aplicación Android con MainActivity declarada',
+      filename: 'app/src/main/res/drawable/ic_sun_launcher.xml',
+      description: 'Icono vectorial de Sol Naranja radiante para la aplicación de Android',
+      code: `<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Fondo Circular Oscuro -->
+    <path
+        android:fillColor="#0D111D"
+        android:pathData="M54,4 C81.61,4 104,26.39 104,54 C104,81.61 81.61,104 54,104 C26.39,104 4,81.61 4,54 C4,26.39 26.39,4 54,4 Z" />
+    <!-- Resplandor Naranja Exterior -->
+    <path
+        android:fillColor="#33FF8A00"
+        android:pathData="M54,18 C73.88,18 90,34.12 90,54 C90,73.88 73.88,90 54,90 C34.12,90 18,73.88 18,54 C18,34.12 34.12,18 54,18 Z" />
+    <!-- Núcleo de Sol Naranja -->
+    <path
+        android:fillColor="#FF7A00"
+        android:pathData="M54,26 C69.46,26 82,38.54 82,54 C82,69.46 69.46,82 54,82 C38.54,82 26,69.46 26,54 C26,38.54 38.54,26 54,26 Z" />
+    <path
+        android:fillColor="#FFB300"
+        android:pathData="M54,34 C65.05,34 74,42.95 74,54 C74,65.05 65.05,74 54,74 C42.95,74 34,65.05 34,54 C34,42.95 42.95,34 54,34 Z" />
+    <!-- Rayos del Sol -->
+    <path android:fillColor="#FFA000" android:pathData="M51,10 L57,10 L55,22 L53,22 Z" />
+    <path android:fillColor="#FFA000" android:pathData="M51,86 L57,86 L55,98 L53,98 Z" />
+    <path android:fillColor="#FFA000" android:pathData="M10,51 L10,57 L22,55 L22,53 Z" />
+    <path android:fillColor="#FFA000" android:pathData="M86,51 L86,57 L98,55 L98,53 Z" />
+</vector>`
+    },
+    {
+      filename: 'app/src/main/res/layout/activity_main.xml',
+      description: 'Diseño gráfico completo para Android: Cabecera con Sol, WebView acelerada y Splash',
       code: `<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.climb">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#07080D">
+
+    <!-- Barra Superior con Icono de Sol -->
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#0E121E"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_sun_launcher" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:text="ClimaVerse Pro"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <ImageButton
+            android:id="@+id/btnRefresh"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_sun_launcher" />
+    </LinearLayout>
+
+    <WebView
+        android:id="@+id/webView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/topBar" />
+
+    <!-- Pantalla de Carga / Splash con Sol Naranja -->
+    <LinearLayout
+        android:id="@+id/layoutSplash"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:src="@drawable/ic_sun_launcher" />
+
+        <ProgressBar
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="24dp"
+            android:indeterminateTint="#FF7A00" />
+    </LinearLayout>
+</RelativeLayout>`
+    },
+    {
+      filename: 'app/src/main/AndroidManifest.xml',
+      description: 'Manifiesto de Android con icono de sol naranja y permisos de Internet/GPS',
+      code: `<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
-        android:label="Climb App"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.NoActionBar">
+        android:icon="@drawable/ic_sun_launcher"
+        android:roundIcon="@drawable/ic_sun_launcher"
+        android:label="ClimaVerse"
+        android:theme="@style/Theme.ClimbApp"
+        android:usesCleartextTraffic="true"
+        android:hardwareAccelerated="true">
 
         <activity android:name="com.example.climb.MainActivity" android:exported="true">
             <intent-filter>
@@ -136,21 +241,58 @@ dependencies {
     },
     {
       filename: 'MainActivity.java',
-      description: 'Actividad Android Java básica con vista textual para APK',
+      description: 'Actividad Android completa con WebView moderna, geolocalización y splash animado',
       code: `package com.example.climb;
 
 import android.os.Bundle;
-import android.widget.TextView;
+import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String APP_URL = "https://ais-dev-hptlblbbic7btz4k2zdqnp-432058254310.us-west1.run.app";
+    private WebView webView;
+    private LinearLayout layoutSplash;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        TextView tv = new TextView(this);
-        tv.setText("¡Climb App con Google AI Studio Lista!");
-        setContentView(tv);
+        setContentView(R.layout.activity_main);
+
+        webView = findViewById(R.id.webView);
+        layoutSplash = findViewById(R.id.layoutSplash);
+        ImageButton btnRefresh = findViewById(R.id.btnRefresh);
+
+        WebSettings settings = webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setDomStorageEnabled(true);
+        settings.setGeolocationEnabled(true);
+
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                if (layoutSplash != null) {
+                    layoutSplash.animate().alpha(0f).setDuration(400)
+                        .withEndAction(() -> layoutSplash.setVisibility(View.GONE));
+                }
+            }
+        });
+
+        btnRefresh.setOnClickListener(v -> webView.reload());
+        webView.loadUrl(APP_URL);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (webView != null && webView.canGoBack()) {
+            webView.goBack();
+        } else {
+            super.onBackPressed();
+        }
     }
 }`
     }

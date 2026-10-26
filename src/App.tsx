@@ -140,20 +140,21 @@ export default function App() {
       />
 
       {/* Android APK GitHub Actions Banner info */}
-      <div className="bg-gradient-to-r from-emerald-950/30 via-slate-900 to-emerald-950/20 border border-emerald-500/20 rounded-2xl px-4 py-3 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-300">
+      <div className="bg-gradient-to-r from-orange-950/40 via-slate-900 to-amber-950/30 border border-orange-500/30 rounded-2xl px-4 py-3 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-300 shadow-lg shadow-orange-500/5">
         <div className="flex items-center gap-2.5">
-          <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></div>
+          <div className="w-6 h-6 rounded-lg bg-orange-500/20 border border-orange-400/40 flex items-center justify-center shrink-0">
+            <span className="w-2.5 h-2.5 rounded-full bg-orange-400 animate-ping"></span>
+          </div>
           <span>
-            <strong className="text-emerald-300">Android APK CI/CD Activo:</strong> Tu proyecto incluye{' '}
-            <code className="text-emerald-200 bg-white/5 px-1 py-0.5 rounded">.github/workflows/android.yml</code> y módulo Android listo para compilar APK en la nube.
+            <strong className="text-orange-400">Android APK con Gráficos Completos &amp; Icono de Sol:</strong> Tu aplicación móvil ahora incluye tema visual oscuro, pantalla de inicio con sol naranja, radar en vivo y navegación nativa.
           </span>
         </div>
         <button
           onClick={() => setIsKotlinModalOpen(true)}
-          className="text-emerald-400 hover:text-emerald-300 font-semibold underline underline-offset-2 flex items-center gap-1"
+          className="text-orange-400 hover:text-orange-300 font-semibold underline underline-offset-2 flex items-center gap-1.5"
         >
           <Smartphone className="w-3.5 h-3.5" />
-          <span>Ver archivos y código Android</span>
+          <span>Ver / Descargar archivos Android</span>
         </button>
       </div>
 

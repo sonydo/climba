@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, MapPin, Compass, Sparkles, Code2, Bookmark, BookmarkCheck, CloudSun, Smartphone } from 'lucide-react';
+import { Search, MapPin, Compass, Sparkles, Code2, Bookmark, BookmarkCheck, Sun, CloudSun, Smartphone } from 'lucide-react';
 import { CityResult } from '../types/weather';
 import { searchCities } from '../services/weatherService';
 
@@ -71,14 +71,15 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="w-full flex flex-col md:flex-row items-center justify-between gap-4 py-2 border-b border-white/10 pb-5">
       {/* Brand & Current Location */}
       <div className="flex items-center gap-3 self-start md:self-auto">
-        <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/20 text-white">
-          <CloudSun className="w-6 h-6" />
+        <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-orange-600 via-amber-500 to-yellow-400 flex items-center justify-center shadow-lg shadow-orange-500/30 text-white relative overflow-hidden group">
+          <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <Sun className="w-6 h-6 text-white drop-shadow-md animate-spin-slow" />
         </div>
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-xl font-bold tracking-tight text-white">ClimaVerse</h1>
-            <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
-              Studio Pro
+            <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-300 border border-orange-500/30 font-semibold">
+              App Pro
             </span>
           </div>
           <div className="flex items-center gap-1.5 text-xs text-slate-400">

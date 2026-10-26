@@ -1,0 +1,64 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Dark Circular Background -->
+    <path
+        android:fillColor="#0D111D"
+        android:pathData="M54,4 C81.61,4 104,26.39 104,54 C104,81.61 81.61,104 54,104 C26.39,104 4,81.61 4,54 C4,26.39 26.39,4 54,4 Z" />
+    
+    <!-- Outer Orange Glow Ring -->
+    <path
+        android:fillColor="#33FF8A00"
+        android:pathData="M54,18 C73.88,18 90,34.12 90,54 C90,73.88 73.88,90 54,90 C34.12,90 18,73.88 18,54 C18,34.12 34.12,18 54,18 Z" />
+
+    <!-- Sun Core Orange Circle -->
+    <path
+        android:fillColor="#FF7A00"
+        android:pathData="M54,26 C69.46,26 82,38.54 82,54 C82,69.46 69.46,82 54,82 C38.54,82 26,69.46 26,54 C26,38.54 38.54,26 54,26 Z" />
+
+    <!-- Sun Inner Light Core -->
+    <path
+        android:fillColor="#FFB300"
+        android:pathData="M54,34 C65.05,34 74,42.95 74,54 C74,65.05 65.05,74 54,74 C42.95,74 34,65.05 34,54 C34,42.95 42.95,34 54,34 Z" />
+
+    <!-- Sun Highlights / Center Glow -->
+    <path
+        android:fillColor="#FFE082"
+        android:pathData="M48,42 C53,42 56,45 56,50 C56,47 52,44 48,44 C45,44 44,46 44,46 C44,43 46,42 48,42 Z" />
+
+    <!-- Top Ray -->
+    <path
+        android:fillColor="#FFA000"
+        android:pathData="M51,10 L57,10 L55,22 L53,22 Z" />
+    <!-- Bottom Ray -->
+    <path
+        android:fillColor="#FFA000"
+        android:pathData="M51,86 L57,86 L55,98 L53,98 Z" />
+    <!-- Left Ray -->
+    <path
+        android:fillColor="#FFA000"
+        android:pathData="M10,51 L10,57 L22,55 L22,53 Z" />
+    <!-- Right Ray -->
+    <path
+        android:fillColor="#FFA000"
+        android:pathData="M86,51 L86,57 L98,55 L98,53 Z" />
+
+    <!-- Top-Right Ray -->
+    <path
+        android:fillColor="#FF8F00"
+        android:pathData="M78,24 L82,28 L72,36 L70,34 Z" />
+    <!-- Bottom-Left Ray -->
+    <path
+        android:fillColor="#FF8F00"
+        android:pathData="M26,76 L30,80 L38,70 L36,68 Z" />
+    <!-- Top-Left Ray -->
+    <path
+        android:fillColor="#FF8F00"
+        android:pathData="M28,24 L24,28 L34,36 L36,34 Z" />
+    <!-- Bottom-Right Ray -->
+    <path
+        android:fillColor="#FF8F00"
+        android:pathData="M80,76 L76,80 L68,70 L70,68 Z" />
+</vector>
