@@ -1,0 +1,42 @@
+name: Android CI - Build APK
+
+on:
+  push:
+    branches: [ "main", "master" ] # Se ejecuta al subir cambios a estas ramas
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch: # Permite ejecutar el proceso manualmente desde GitHub
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout del código
+      uses: actions/checkout@v4
+
+    - name: Configurar Java (JDK 17)
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu' # Distribución recomendada para Android
+        java-version: '17'   # Cambiá a '21' si tu proyecto usa una versión más nueva
+
+    - name: Configurar Gradle
+      uses: gradle/actions/setup-gradle@v4
+
+    - name: Dar permisos de ejecución al Wrapper de Gradle
+      run: chmod +x ./gradlew
+
+    - name: Compilar APK (Inyectando API Key)
+      # Aquí pasamos la clave guardada en Secrets como variable de entorno
+      env:
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      # Ejecutamos la tarea directamente sobre el módulo :app para evitar el error anterior
+      run: ./gradlew :app:assembleDebug --no-daemon
+
+    - name: Subir APK como artefacto de GitHub
+      uses: actions/upload-artifact@v4
+      with:
+        name: climb-app-debug-apk # El nombre que tendrá el archivo de descarga
+        path: app/build/outputs/apk/debug/app-debug.apk # Ruta estándar del APK generado
+        retention-days: 7 # El archivo estará disponible para descargar por 7 días
