@@ -1,26 +1,3 @@
-android {
-    // ... tu configuración actual (compileSdk, defaultConfig, etc.)
-
-    buildTypes {
-        debug {
-            // Lee la clave de GitHub Actions en formato Groovy
-            buildConfigField "String", "GEMINI_API_KEY", "\"${System.getenv('GEMINI_API_KEY') ?: ''}\""
-        }
-        release {
-            buildConfigField "String", "GEMINI_API_KEY", "\"${System.getenv('GEMINI_API_KEY') ?: ''}\""
-        }
-    }
-
-    // Asegurate de tener habilitado BuildConfig
-    buildFeatures {
-        buildConfig true
-    }
-}
-plugins {
-    alias(libs.plugins.android.application) // O id("com.android.application")
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
-}
 buildscript {
     repositories {
         google()
@@ -41,4 +18,3 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-

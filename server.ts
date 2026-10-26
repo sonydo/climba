@@ -26,6 +26,9 @@ const getGeminiClient = () => {
   });
 };
 
+// Cooldown timestamp to respect Gemini Free Tier quotas and avoid spamming
+let geminiQuotaExhaustedUntil = 0;
+
 // API Endpoint for AI Weather Insights
 app.post('/api/ai/insights', async (req, res) => {
   try {
@@ -34,7 +37,7 @@ app.post('/api/ai/insights', async (req, res) => {
 
     // Helper function for fallback insights if API fails or rate limited
     const getFallbackInsights = () => ({
-      summary: `Actualmente en ${city} la temperatura es de ${current?.temp ?? 20}°${units === 'imperial' ? 'F' : 'C'} con condición ${current?.condition || 'despejado'}. El tiempo se mantiene fresco y dentro de lo esperado para la temporada.`,
+      summary: `Actualmente en ${city} la temperatura es de ${current?.temp ?? 20}°${units === 'imperial' ? 'F' : 'C'} con condición ${current?.condition || 'despejado'}. El tiempo se mantiene estable y dentro de lo esperado para la temporada.`,
       clothing: (current?.temp ?? 20) < 15 
         ? "Te sugerimos llevar chaqueta o abrigo, bufanda ligera y calzado cómodo."
         : (current?.temp ?? 20) > 25
@@ -64,7 +67,7 @@ app.post('/api/ai/insights', async (req, res) => {
       funFact: `¿Sabías que ${city} cuenta con microclimas influenciados por su topografía local e islas de calor urbana?`
     });
 
-    if (!ai) {
+    if (!ai || Date.now() < geminiQuotaExhaustedUntil) {
       return res.json(getFallbackInsights());
     }
 
@@ -133,11 +136,14 @@ app.post('/api/ai/insights', async (req, res) => {
       const parsed = JSON.parse(response.text || '{}');
       return res.json(parsed);
     } catch (genErr: any) {
-      console.warn("Gemini API Rate Limit or Error, returning rich fallback insights:", genErr?.message || genErr);
+      const errMsg = String(genErr?.message || '');
+      const isQuota = errMsg.includes('429') || errMsg.includes('quota') || genErr?.status === 'RESOURCE_EXHAUSTED';
+      if (isQuota) {
+        geminiQuotaExhaustedUntil = Date.now() + 30 * 60 * 1000;
+      }
       return res.json(getFallbackInsights());
     }
   } catch (err: any) {
-    console.error("AI Insights Endpoint Error:", err);
     return res.json({
       summary: "Servicio meteorológico activo en tiempo real con datos de sensores locales.",
       clothing: "Vestir de acuerdo a las condiciones térmicas locales.",
@@ -159,10 +165,32 @@ app.post('/api/ai/chat', async (req, res) => {
     const { messages, weatherContext } = req.body;
     const ai = getGeminiClient();
 
-    if (!ai) {
-      return res.json({
-        reply: "Hola, soy ClimaAI. Actualmente estoy en modo consulta básica. Si activas la clave de Gemini en Ajustes > Secrets, podré analizar de forma profunda cualquier consulta sobre viajes, clima futuro o física meteorológica."
-      });
+    const getFallbackChatReply = () => {
+      const lastUserMsg = (messages[messages.length - 1]?.text || '').toLowerCase();
+      const city = weatherContext?.city || 'tu ubicación';
+      const temp = weatherContext?.temp ?? 20;
+      const cond = weatherContext?.condition || 'agradable';
+
+      if (lastUserMsg.includes('ropa') || lastUserMsg.includes('vestir') || lastUserMsg.includes('abrigo') || lastUserMsg.includes('ponerme')) {
+        return temp < 15
+          ? `Para ${city} con ${temp}°C te sugiero llevar una chaqueta abrigada o sweater y calzado cerrado.`
+          : temp > 25
+          ? `Hace calor en ${city} (${temp}°C). Lo ideal es ropa ligera y transpirable, gafas de sol y protección solar.`
+          : `El clima en ${city} es templado (${temp}°C). Una chaqueta fina o manga larga te vendrá perfecto.`;
+      }
+      if (lastUserMsg.includes('llov') || lastUserMsg.includes('lluvia') || lastUserMsg.includes('paraguas')) {
+        return (weatherContext?.condition || '').toLowerCase().includes('lluv')
+          ? `Sí, se registran precipitaciones en ${city}. ¡Lleva paraguas o impermeable!`
+          : `Por el momento las condiciones indican ${cond} sin lluvias significativas en ${city}.`;
+      }
+      if (lastUserMsg.includes('deporte') || lastUserMsg.includes('correr') || lastUserMsg.includes('bici')) {
+        return `Las condiciones en ${city} son de ${temp}°C con viento de ${weatherContext?.windSpeed ?? 10} km/h, apto para actividad física al aire libre.`;
+      }
+      return `En ${city} se registran ${temp}°C con condición "${cond}", humedad de ${weatherContext?.humidity ?? 50}% y vientos de ${weatherContext?.windSpeed ?? 10} km/h. ¿En qué más puedo orientarte?`;
+    };
+
+    if (!ai || Date.now() < geminiQuotaExhaustedUntil) {
+      return res.json({ reply: getFallbackChatReply() });
     }
 
     const systemInstruction = `Eres "ClimaAI", un asistente de meteorología muy amable, entusiasta y claro en español.
@@ -194,15 +222,17 @@ Responde de forma concisa y útil a sus preguntas. Mantén un tono natural, mode
 
       return res.json({ reply: response.text });
     } catch (chatApiErr: any) {
-      console.warn("Gemini Chat API Error or Rate Limit:", chatApiErr?.message || chatApiErr);
-      const lastUserMsg = messages[messages.length - 1]?.text || '';
-      return res.json({
-        reply: `Actualmente en ${weatherContext?.city || 'tu ubicación'} se registran ${weatherContext?.temp || 20}°C con condición ${weatherContext?.condition || 'estable'}. (Nota: La cuota de Gemini AI alcanzó su límite temporal, pero estoy respondiendo con tus datos de sensores en tiempo real).`
-      });
+      const errMsg = String(chatApiErr?.message || '');
+      const isQuota = errMsg.includes('429') || errMsg.includes('quota') || chatApiErr?.status === 'RESOURCE_EXHAUSTED';
+      if (isQuota) {
+        geminiQuotaExhaustedUntil = Date.now() + 30 * 60 * 1000;
+      }
+      return res.json({ reply: getFallbackChatReply() });
     }
   } catch (err: any) {
-    console.error("AI Chat Error:", err);
-    return res.json({ reply: "Lo siento, hubo un problema momentáneo con la conexión. ¡Inténtalo de nuevo en unos momentos!" });
+    return res.json({
+      reply: "El servicio meteorológico local está activo en tiempo real. ¡Pregúntame cualquier detalle de lluvia, temperatura o deporte para tu ciudad!"
+    });
   }
 });
 

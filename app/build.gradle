@@ -1,27 +1,41 @@
-// EL TRUCO DEFINITIVO SEGURO: Espera de forma dinámica a que Android cree la tarea antes de inyectar el XML
-tasks.whenTaskAdded { task ->
-    if (task.name == "preBuild") {
-        task.doFirst {
-            def manifestFile = file("src/main/AndroidManifest.xml")
-            manifestFile.parentFile.mkdirs()
-            manifestFile.text = """<?xml version='1.0' encoding='utf-8'?>
-<manifest xmlns:android='http://android.com'>
-    <application
-        android:allowBackup='true'
-        android:label='Climb App'
-        android:supportsRtl='true'
-        android:theme='@style/Theme.AppCompat.NoActionBar'>
-        <activity 
-            android:name='com.example.climb.MainActivity'
-            android:exported='true'>
-            <intent-filter>
-                <action android:name='android.intent.action.MAIN' />
-                <category android:name='android.intent.category.LAUNCHER' />
-            </intent-filter>
-        </activity>
-    </application>
-</manifest>"""
-            println("¡AndroidManifest.xml inyectado de forma dinámica y segura!")
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.example.climb'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.example.climb"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            buildConfigField "String", "GEMINI_API_KEY", "\"${System.getenv('GEMINI_API_KEY') ?: ''}\""
+        }
+        debug {
+            minifyEnabled false
+            buildConfigField "String", "GEMINI_API_KEY", "\"${System.getenv('GEMINI_API_KEY') ?: ''}\""
         }
     }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
 }

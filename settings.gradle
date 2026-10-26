@@ -1,5 +1,3 @@
-include(":app") // Si usás Kotlin DSL (.kts)
-// o include ':app' si es Groovy (.gradle)
 pluginManagement {
     repositories {
         google()
@@ -17,5 +15,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "climb"
 include ':app'
-
-

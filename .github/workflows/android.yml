@@ -1,6 +1,10 @@
-- name: Build APK con Gradle
-  run: ./gradlew :app:assembleDebug --no-daemon
-    branches: [ "main" ] # Cambia a "master" si tu rama principal se llama así
+name: Generar APK de Android
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
   workflow_dispatch:
 
 jobs:
@@ -12,7 +16,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Configurar Java JDK 17
-      uses: actions/setup-java@v5
+      uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
@@ -23,42 +27,17 @@ jobs:
         gradle-version: '8.5'
 
     - name: Generar el archivo ejecutable gradlew
-      run: gradle wrapper --gradle-version 8.5
-
-    - name: Dar permisos de ejecución
-      run: chmod +x gradlew
-
-    # EL TRUCO MAESTRO: Borra el XML corrupto del servidor y escribe uno perfecto con comandos de Linux
-    - name: Remover y Regenerar Manifiesto de forma Nativa
       run: |
-        rm -f app/src/main/AndroidManifest.xml
-        mkdir -p app/src/main
-        cat << 'EOF' > app/src/main/AndroidManifest.xml
-        <?xml version="1.0" encoding="utf-8"?>
-        <manifest xmlns:android="http://android.com">
-            <application
-                android:allowBackup="true"
-                android:label="Climb App"
-                android:supportsRtl="true"
-                android:theme="@style/Theme.AppCompat.NoActionBar">
-                <activity 
-                    android:name="com.example.climb.MainActivity"
-                    android:exported="true">
-                    <intent-filter>
-                        <action android:name="android.intent.action.MAIN" />
-                        <category android:name="android.intent.category.LAUNCHER" />
-                    </intent-filter>
-                </activity>
-            </application>
-        </manifest>
-        EOF
-        echo "¡Manifiesto inyectado por consola con éxito!"
+        gradle wrapper --gradle-version 8.5
+        chmod +x gradlew
 
     - name: Compilar el archivo APK (Debug rápido)
-      run: ./gradlew assembleDebug --no-daemon
+      env:
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      run: ./gradlew :app:assembleDebug --no-daemon
 
     - name: Subir el archivo APK generado a GitHub
       uses: actions/upload-artifact@v4
       with:
-        name: Mi-Aplicacion-AI-Studio-APK
-        path: "**/build/outputs/apk/**/*.apk"
+        name: climb-app-debug-apk
+        path: "app/build/outputs/apk/**/*.apk"
